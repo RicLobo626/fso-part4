@@ -4,7 +4,7 @@ import middleware from "./utils/middleware";
 import logger from "./utils/logger";
 import config from "./utils/config";
 import mongoose from "mongoose";
-import Blog from "./models/Blog";
+import blogsRouter from "./routes/blogsRouter";
 
 mongoose.set("strictQuery", false);
 
@@ -12,21 +12,7 @@ const app = express();
 
 app.use(middleware.requestLogger);
 app.use(express.json());
-
-app.get("/api/blogs", async (_req, res) => {
-  const blogs = await Blog.find({});
-
-  res.json(blogs);
-});
-
-app.post("/api/blogs", async (req, res) => {
-  const blog = new Blog(req.body);
-
-  await blog.save();
-
-  res.status(201).json(blog);
-});
-
+app.use("/api/blogs", blogsRouter);
 app.use(middleware.unknownEndpointHandler);
 app.use(middleware.errorHandler);
 
