@@ -16,4 +16,25 @@ const favoriteBlog = (blogs: IBlog[]) => {
   return { title, author, likes };
 };
 
-export default { dummy, totalLikes, favoriteBlog };
+const mostBlogs = (blogs: IBlog[]) => {
+  if (blogs.length === 0) return null;
+
+  const blogCountMap: Record<string, number> = {};
+
+  let authorWithMostBlogs: IBlog["author"] = blogs[0].author;
+
+  blogs.forEach((blog) => {
+    blogCountMap[blog.author] = (blogCountMap[blog.author] || 0) + 1;
+
+    if (blogCountMap[blog.author] > blogCountMap[authorWithMostBlogs]) {
+      authorWithMostBlogs = blog.author;
+    }
+  });
+
+  return {
+    author: authorWithMostBlogs,
+    blogs: blogCountMap[authorWithMostBlogs],
+  };
+};
+
+export default { dummy, totalLikes, favoriteBlog, mostBlogs };

@@ -106,4 +106,25 @@ describe("list helper", () => {
       assert.deepStrictEqual(result, { title, author, likes });
     });
   });
+
+  describe("most blogs", () => {
+    test("of empty list is null", () => {
+      const result = listHelper.mostBlogs([]);
+      assert.strictEqual(result, null);
+    });
+
+    test("when list has only one blog, equals the author of that blog", () => {
+      const result = listHelper.mostBlogs(listWithOneBlog);
+
+      const { author } = listWithOneBlog[0];
+
+      assert.deepStrictEqual(result, { author, blogs: 1 });
+    });
+
+    test("of a bigger list is the author with most blogs", () => {
+      const result = listHelper.mostBlogs(blogs);
+      console.log(result);
+      assert.deepStrictEqual(result, { author: "Robert C. Martin", blogs: 3 });
+    });
+  });
 });
