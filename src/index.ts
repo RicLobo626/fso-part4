@@ -1,19 +1,12 @@
 import "dotenv/config";
 import "express-async-errors";
 import express from "express";
-import { Document, Schema, Types, set, model, connect } from "mongoose";
 import middleware from "./utils/middleware";
 import logger from "./utils/logger";
+import { Document, Schema, Types, set, model, connect } from "mongoose";
+import { IBlog } from "./utils/types";
 
 set("strictQuery", false);
-
-interface IBlog {
-  id: Types.ObjectId;
-  title: string;
-  author: string;
-  url: string;
-  likes: number;
-}
 
 const blogSchema = new Schema<IBlog>({
   title: String,
