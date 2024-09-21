@@ -3,6 +3,7 @@ import "express-async-errors";
 import express from "express";
 import { Document, Schema, Types, set, model, connect } from "mongoose";
 import middleware from "./utils/middleware";
+import logger from "./utils/logger";
 
 set("strictQuery", false);
 
@@ -56,9 +57,9 @@ app.use(middleware.errorHandler);
 const connectToDB = async () => {
   try {
     await connect(process.env.MONGODB_URI!);
-    console.log("Connected to DB");
+    logger.info("Connected to DB");
   } catch (e) {
-    console.error("Couldn't connect to DB: ", e);
+    logger.error("Couldn't connect to DB: ", e);
     process.exit(1);
   }
 };
@@ -68,7 +69,7 @@ const init = async () => {
 
   const PORT = process.env.PORT || 3002;
 
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  app.listen(PORT, () => logger.info(`Server running on port ${PORT}`));
 };
 
 void init();
