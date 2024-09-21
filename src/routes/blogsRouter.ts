@@ -1,20 +1,9 @@
 import { Router } from "express";
-import Blog from "../models/Blog";
+import blogsController from "../controllers/blogsController";
 
 const blogsRouter = Router();
 
-blogsRouter.get("/", async (_req, res) => {
-  const blogs = await Blog.find({});
-
-  res.json(blogs);
-});
-
-blogsRouter.post("/", async (req, res) => {
-  const blog = new Blog(req.body);
-
-  await blog.save();
-
-  res.status(201).json(blog);
-});
+blogsRouter.get("/", blogsController.getBlogs);
+blogsRouter.post("/", blogsController.createBlog);
 
 export default blogsRouter;
