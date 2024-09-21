@@ -55,4 +55,13 @@ export default tseslint.config({
     "@stylistic/quotes": ["error", "double"],
     "@stylistic/semi": ["error", "always"],
   },
+
+  overrides: [
+    {
+      files: ["*.test.ts"],
+      rules: {
+        "@typescript-eslint/no-floating-promises": 0,
+      },
+    },
+  ],
 });
