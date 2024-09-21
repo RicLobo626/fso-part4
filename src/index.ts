@@ -1,11 +1,10 @@
-import "dotenv/config";
 import "express-async-errors";
 import express from "express";
 import middleware from "./utils/middleware";
 import logger from "./utils/logger";
+import config from "./utils/config";
 import { Document, Schema, Types, set, model, connect } from "mongoose";
 import { IBlog } from "./utils/types";
-
 set("strictQuery", false);
 
 const blogSchema = new Schema<IBlog>({
@@ -49,7 +48,7 @@ app.use(middleware.errorHandler);
 
 const connectToDB = async () => {
   try {
-    await connect(process.env.MONGODB_URI!);
+    await connect(config.MONGODB_URI);
     logger.info("Connected to DB");
   } catch (e) {
     logger.error("Couldn't connect to DB: ", e);
@@ -60,9 +59,9 @@ const connectToDB = async () => {
 const init = async () => {
   await connectToDB();
 
-  const PORT = process.env.PORT || 3002;
-
-  app.listen(PORT, () => logger.info(`Server running on port ${PORT}`));
+  app.listen(config.PORT, () => {
+    logger.info(`Server running on port ${config.PORT}`);
+  });
 };
 
 void init();
