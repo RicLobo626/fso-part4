@@ -3,26 +3,10 @@ import express from "express";
 import middleware from "./utils/middleware";
 import logger from "./utils/logger";
 import config from "./utils/config";
-import { Document, Schema, Types, set, model, connect } from "mongoose";
-import { IBlog } from "./utils/types";
-set("strictQuery", false);
+import mongoose from "mongoose";
+import Blog from "./models/Blog";
 
-const blogSchema = new Schema<IBlog>({
-  title: String,
-  author: String,
-  url: String,
-  likes: Number,
-});
-
-blogSchema.set("toJSON", {
-  transform: (_doc: Document, returnObj) => {
-    returnObj.id = returnObj._id as Types.ObjectId;
-    delete returnObj._id;
-    delete returnObj.__v;
-  },
-});
-
-const Blog = model<IBlog>("Blog", blogSchema);
+mongoose.set("strictQuery", false);
 
 const app = express();
 
@@ -48,7 +32,7 @@ app.use(middleware.errorHandler);
 
 const connectToDB = async () => {
   try {
-    await connect(config.MONGODB_URI);
+    await mongoose.connect(config.MONGODB_URI);
     logger.info("Connected to DB");
   } catch (e) {
     logger.error("Couldn't connect to DB: ", e);
