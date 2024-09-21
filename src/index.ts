@@ -6,7 +6,7 @@ import { Document, Schema, Types, set, model, connect } from "mongoose";
 
 set("strictQuery", false);
 
-export interface IBlog {
+interface IBlog {
   id: Types.ObjectId;
   title: string;
   author: string;
