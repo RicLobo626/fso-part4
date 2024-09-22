@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
-import logger from "./logger";
-import config from "./config";
+const mongoose = require("mongoose");
+const logger = require("./logger");
+const config = require("./config");
 
-export const connectToDB = async () => {
+const connectToDB = async () => {
   try {
     await mongoose.connect(config.MONGODB_URI);
     logger.info("Connected to DB");
@@ -11,3 +11,5 @@ export const connectToDB = async () => {
     process.exit(1);
   }
 };
+
+module.exports = { connectToDB };

@@ -1,11 +1,10 @@
-import { ErrorRequestHandler, RequestHandler, Request } from "express";
-import morgan from "morgan";
+const morgan = require("morgan");
 
-const unknownEndpointHandler: RequestHandler = (_req, res) => {
+const unknownEndpointHandler = (_req, res) => {
   res.status(404).json({ error: "unknown endpoint" });
 };
 
-const errorHandler: ErrorRequestHandler = (error: Error, _req, res, next) => {
+const errorHandler = (error, _req, res, next) => {
   switch (error.name) {
     case "CastError":
       return res.status(400).json({ error: "malformatted id" });
@@ -16,11 +15,11 @@ const errorHandler: ErrorRequestHandler = (error: Error, _req, res, next) => {
   return next(error);
 };
 
-morgan.token("body", (req: Request) => JSON.stringify(req.body));
+morgan.token("body", (req) => JSON.stringify(req.body));
 
 const requestLogger = morgan(":method :url :body - :response-time ms");
 
-export default {
+module.exports = {
   unknownEndpointHandler,
   errorHandler,
   requestLogger,

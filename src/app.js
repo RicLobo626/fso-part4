@@ -1,8 +1,8 @@
-import "express-async-errors";
-import express from "express";
-import middleware from "./utils/middleware";
-import mongoose from "mongoose";
-import blogsRouter from "./routes/blogsRouter";
+require("express-async-errors");
+const express = require("express");
+const middleware = require("./utils/middleware");
+const mongoose = require("mongoose");
+const blogsRouter = require("./routes/blogsRouter");
 
 mongoose.set("strictQuery", false);
 
@@ -14,4 +14,4 @@ app.use("/api/blogs", blogsRouter);
 app.use(middleware.unknownEndpointHandler);
 app.use(middleware.errorHandler);
 
-export default app;
+module.exports = app;
