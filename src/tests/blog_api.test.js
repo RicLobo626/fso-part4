@@ -55,6 +55,30 @@ describe("when there is initially some blogs saved", () => {
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1);
       assert(blogsAtEnd.some((b) => b.title === "Created by a test"));
     });
+
+    test("will default likes to 0 if field is missing", async () => {
+      const newBlog = {
+        title: "Testing default likes",
+        author: "Test",
+        url: "http://testblogs.com",
+      };
+
+      await api.post("/api/blogs").send(newBlog);
+
+      const blogsAtEnd = await helper.getBlogsInDB();
+
+      const blog = blogsAtEnd.find((b) => b.title === "Testing default likes");
+
+      assert.strictEqual(blog.likes, 0);
+    });
+
+    test("will respond with 400 if title or url are missing", async () => {
+      const newBlog = {
+        author: "Test",
+      };
+
+      await api.post("/api/blogs").send(newBlog).expect(400);
+    });
   });
 });
 
