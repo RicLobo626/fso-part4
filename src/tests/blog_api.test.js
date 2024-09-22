@@ -80,6 +80,26 @@ describe("when there is initially some blogs saved", () => {
       await api.post("/api/blogs").send(newBlog).expect(400);
     });
   });
+
+  describe("deletion of a blog", () => {
+    test.only("succeeds with status code 204 if id is valid", async () => {
+      const blogsAtStart = await helper.getBlogsInDB();
+      const blogToDelete = blogsAtStart[0];
+
+      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+      const blogsAtEnd = await helper.getBlogsInDB();
+
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1);
+      assert(!blogsAtEnd.some((b) => b.id === blogToDelete.id));
+    });
+
+    test("responds with 204 if blog does not exist", async () => {
+      const nonExistingId = helper.getNonExistingId();
+
+      await api.delete(`/api/blogs/${nonExistingId}`).expect(204);
+    });
+  });
 });
 
 after(async () => {
