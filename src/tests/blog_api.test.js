@@ -29,6 +29,12 @@ describe("when there is initially some blogs saved", () => {
     assert.strictEqual(response.body.length, helper.initialBlogs.length);
   });
 
+  test("unique identifier property of the blog posts is named id", async () => {
+    const response = await api.get("/api/blogs");
+
+    assert(response.body.every((b) => b.id));
+  });
+
   describe("addition of a new blog", () => {
     test("succeeds with valid data", async () => {
       const newBlog = {
