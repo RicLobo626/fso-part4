@@ -28,6 +28,28 @@ describe("when there is initially some blogs saved", () => {
 
     assert.strictEqual(response.body.length, helper.initialBlogs.length);
   });
+
+  describe("addition of a new blog", () => {
+    test("succeeds with valid data", async () => {
+      const newBlog = {
+        title: "Created by a test",
+        author: "Test",
+        url: "http://testblogs.com",
+        likes: 0,
+      };
+
+      await api
+        .post("/api/blogs")
+        .send(newBlog)
+        .expect(201)
+        .expect("Content-Type", /application\/json/);
+
+      const blogsAtEnd = await helper.getBlogsInDB();
+
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1);
+      assert(blogsAtEnd.some((b) => b.title === "Created by a test"));
+    });
+  });
 });
 
 after(async () => {
