@@ -5,5 +5,6 @@ const blogsRouter = Router();
 
 blogsRouter.get("/", blogsController.getBlogs);
 blogsRouter.post("/", blogsController.createBlog);
+blogsRouter.delete("/:id", blogsController.deleteBlog);
 
 module.exports = blogsRouter;
