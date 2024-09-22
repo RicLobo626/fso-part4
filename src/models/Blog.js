@@ -5,7 +5,7 @@ const blogSchema = new Schema({
   title: { type: String, required: true },
   url: { type: String, required: true },
   likes: { type: Number, default: 0 },
-  author: String,
+  author: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
 blogSchema.set("toJSON", {
