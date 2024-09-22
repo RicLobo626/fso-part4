@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const logger = require("./logger");
 const config = require("./config");
 
-const connectToDB = async () => {
+const connect = async () => {
   try {
     await mongoose.connect(config.MONGODB_URI);
     logger.info("Connected to DB");
@@ -12,4 +12,6 @@ const connectToDB = async () => {
   }
 };
 
-module.exports = { connectToDB };
+const disconnect = () => mongoose.connection.close();
+
+module.exports = { connect, disconnect };
