@@ -21,8 +21,25 @@ const deleteBlog = async (req, res) => {
   res.status(204).end();
 };
 
+const likeBlog = async (req, res) => {
+  const id = req.params.id;
+
+  const blog = await Blog.findByIdAndUpdate(
+    id,
+    { $inc: { likes: 1 } },
+    { new: true }
+  );
+
+  if (blog) {
+    return res.json(blog);
+  }
+
+  res.status(404).json({ error: "Blog not found" });
+};
+
 module.exports = {
   getBlogs,
+  likeBlog,
   createBlog,
   deleteBlog,
 };

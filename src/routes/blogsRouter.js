@@ -3,8 +3,9 @@ const blogsController = require("../controllers/blogsController");
 
 const blogsRouter = Router();
 
-blogsRouter.get("/", blogsController.getBlogs);
 blogsRouter.post("/", blogsController.createBlog);
+blogsRouter.get("/", blogsController.getBlogs);
+blogsRouter.put("/:id", blogsController.likeBlog);
 blogsRouter.delete("/:id", blogsController.deleteBlog);
 
 module.exports = blogsRouter;
