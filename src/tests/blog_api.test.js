@@ -82,7 +82,7 @@ describe("when there is initially some blogs saved", () => {
   });
 
   describe("deletion of a blog", () => {
-    test.only("succeeds with status code 204 if id is valid", async () => {
+    test("succeeds with status code 204 if id is valid", async () => {
       const blogsAtStart = await helper.getBlogsInDB();
       const blogToDelete = blogsAtStart[0];
 
@@ -98,6 +98,31 @@ describe("when there is initially some blogs saved", () => {
       const nonExistingId = helper.getNonExistingId();
 
       await api.delete(`/api/blogs/${nonExistingId}`).expect(204);
+    });
+  });
+
+  describe("liking a blog", () => {
+    test("succeeds with status code 200 if id is valid", async () => {
+      const blogsAtStart = await helper.getBlogsInDB();
+      const blogToLike = blogsAtStart[0];
+
+      await api
+        .put(`/api/blogs/${blogToLike.id}`)
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
+
+      const blogsAtEnd = await helper.getBlogsInDB();
+      const likedBlog = blogsAtEnd.find((b) => {
+        return b.id.toString() === blogToLike.id.toString();
+      });
+
+      assert.strictEqual(likedBlog.likes, blogToLike.likes + 1);
+    });
+
+    test("responds with 404 if blog does not exist", async () => {
+      const nonExistingId = helper.getNonExistingId();
+
+      await api.put(`/api/blogs/${nonExistingId}/like`).expect(404);
     });
   });
 });
