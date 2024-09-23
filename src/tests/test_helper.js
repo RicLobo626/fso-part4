@@ -1,4 +1,5 @@
 const { Types } = require("mongoose");
+const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const Blog = require("../models/Blog");
 
@@ -24,6 +25,11 @@ const initialBlogs = [
   },
 ];
 
+const initialUser = {
+  name: "John Doe",
+  username: "johnny",
+};
+
 const getNonExistingId = () => new Types.ObjectId();
 
 const getBlogsInDB = async () => {
@@ -43,6 +49,11 @@ const getUsersInDB = async () => {
 
 const resetUsersInDB = async () => {
   await User.deleteMany({});
+
+  const passwordHash = await bcrypt.hash("pw123", 10);
+  const user = new User({ ...initialUser, passwordHash });
+
+  await user.save();
 };
 
 module.exports = {

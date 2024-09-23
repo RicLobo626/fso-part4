@@ -11,99 +11,93 @@ before(async () => {
   await db.connect();
 });
 
-describe.only("adding a new user", () => {
+describe("when there is initially one user in the DB", () => {
   beforeEach(async () => {
     await helper.resetUsersInDB();
   });
 
-  test("succeeds with valid data", async () => {
-    const usersAtStart = await helper.getUsersInDB();
+  describe("adding a new user", () => {
+    test("succeeds with valid data", async () => {
+      const usersAtStart = await helper.getUsersInDB();
 
-    const newUser = {
-      name: "John Doe",
-      username: "johndoe",
-      password: "password",
-    };
+      const newUser = {
+        name: "Ricky Martin",
+        username: "ricky",
+        password: "password123",
+      };
 
-    await api
-      .post("/api/users")
-      .send(newUser)
-      .expect(201)
-      .expect("Content-Type", /application\/json/);
+      await api
+        .post("/api/users")
+        .send(newUser)
+        .expect(201)
+        .expect("Content-Type", /application\/json/);
 
-    const usersAtEnd = await helper.getUsersInDB();
+      const usersAtEnd = await helper.getUsersInDB();
 
-    assert(usersAtEnd.length === usersAtStart.length + 1);
-    assert(usersAtEnd.some((u) => u.username === newUser.username));
-  });
+      assert(usersAtEnd.length === usersAtStart.length + 1);
+      assert(usersAtEnd.some((u) => u.username === newUser.username));
+    });
 
-  test("fails with status code 400 and proper error message if password is invalid", async () => {
-    const usersAtStart = await helper.getUsersInDB();
+    test("fails with status code 400 and proper error message if password is invalid", async () => {
+      const usersAtStart = await helper.getUsersInDB();
 
-    const newUser = {
-      name: "John Doe",
-      username: "johndoe",
-      password: "pa",
-    };
+      const newUser = {
+        name: "Bob Smith",
+        username: "bob",
+        password: "pa",
+      };
 
-    await api
-      .post("/api/users")
-      .send(newUser)
-      .expect(400)
-      .expect("Content-Type", /application\/json/)
-      .expect({ error: "Password must be at least 3 characters long" });
+      await api
+        .post("/api/users")
+        .send(newUser)
+        .expect(400)
+        .expect("Content-Type", /application\/json/)
+        .expect({ error: "Password must be at least 3 characters long" });
 
-    const usersAtEnd = await helper.getUsersInDB();
+      const usersAtEnd = await helper.getUsersInDB();
 
-    assert(usersAtEnd.length === usersAtStart.length);
-  });
+      assert(usersAtEnd.length === usersAtStart.length);
+    });
 
-  test("fails with status code 400 and proper error message if username is invalid", async () => {
-    const usersAtStart = await helper.getUsersInDB();
+    test("fails with status code 400 and proper error message if username is invalid", async () => {
+      const usersAtStart = await helper.getUsersInDB();
 
-    const newUser = {
-      name: "John Doe",
-      username: "jo",
-      password: "pw123",
-    };
+      const newUser = {
+        name: "Tony Stark",
+        username: "to",
+        password: "pw123",
+      };
 
-    const data = await api
-      .post("/api/users")
-      .send(newUser)
-      .expect(400)
-      .expect("Content-Type", /application\/json/);
+      const data = await api
+        .post("/api/users")
+        .send(newUser)
+        .expect(400)
+        .expect("Content-Type", /application\/json/);
 
-    const usersAtEnd = await helper.getUsersInDB();
+      const usersAtEnd = await helper.getUsersInDB();
 
-    assert(data.body.error.includes("User validation failed"));
-    assert(usersAtEnd.length === usersAtStart.length);
-  });
+      assert(data.body.error.includes("User validation failed"));
+      assert(usersAtEnd.length === usersAtStart.length);
+    });
 
-  test("fails with status code 400 and proper error message if username is not unique", async () => {
-    const usersAtStart = await helper.getUsersInDB();
+    test("fails with status code 400 and proper error message if username is not unique", async () => {
+      const usersAtStart = await helper.getUsersInDB();
 
-    const newUser = {
-      name: "John Doe",
-      username: "johndoe",
-      password: "password",
-    };
+      const newUser = {
+        name: "John Doe",
+        username: "johnny",
+        password: "password",
+      };
 
-    await api
-      .post("/api/users")
-      .send(newUser)
-      .expect(201)
-      .expect("Content-Type", /application\/json/);
+      await api
+        .post("/api/users")
+        .send(newUser)
+        .expect(400)
+        .expect("Content-Type", /application\/json/);
 
-    const usersAtEnd = await helper.getUsersInDB();
-    assert(usersAtEnd.length === usersAtStart.length + 1);
-
-    await api
-      .post("/api/users")
-      .send(newUser)
-      .expect(400)
-      .expect("Content-Type", /application\/json/);
-
-    assert(usersAtEnd.length === usersAtStart.length + 1);
+      const usersAtEnd = await helper.getUsersInDB();
+      assert(usersAtEnd.length === usersAtStart.length);
+    });
   });
 });
 
