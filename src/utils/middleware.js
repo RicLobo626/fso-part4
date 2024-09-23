@@ -10,6 +10,10 @@ const errorHandler = (error, _req, res, next) => {
       return res.status(400).json({ error: "malformatted id" });
     case "ValidationError":
       return res.status(400).json({ error: error.message });
+    case "MongoServerError":
+      if (error.message.includes("E11000 duplicate key error")) {
+        return res.status(400).json({ error: "username must be unique" });
+      }
   }
 
   return next(error);
