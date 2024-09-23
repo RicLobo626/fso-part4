@@ -2,7 +2,11 @@ const Blog = require("../models/Blog.js");
 const User = require("../models/User.js");
 
 const getBlogs = async (_req, res) => {
-  const blogs = await Blog.find({});
+  const blogs = await Blog.find({}).populate("author", {
+    id: 1,
+    username: 1,
+    name: 1,
+  });
 
   res.json(blogs);
 };
