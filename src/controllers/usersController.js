@@ -4,9 +4,11 @@ const User = require("../models/User");
 const createUser = async (req, res) => {
   const { name, username, password } = req.body;
 
-  if (!password || password.length < 4) {
+  const pwdMinLength = 3;
+
+  if (!password || password.length < pwdMinLength) {
     return res.status(400).json({
-      error: "Password must be at least 3 characters long",
+      error: `Password must be at least ${pwdMinLength} characters long`,
     });
   }
 
