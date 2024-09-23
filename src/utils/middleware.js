@@ -1,4 +1,6 @@
 const morgan = require("morgan");
+const jwt = require("jsonwebtoken");
+const config = require("./config");
 
 const unknownEndpointHandler = (_req, res) => {
   res.status(404).json({ error: "unknown endpoint" });
@@ -14,17 +16,50 @@ const errorHandler = (error, _req, res, next) => {
       if (error.message.includes("E11000 duplicate key error")) {
         return res.status(400).json({ error: "username must be unique" });
       }
+      break;
+    case "JsonWebTokenError":
+      return res.status(401).json({ error: "invalid token" });
+    case "TokenExpiredError":
+      return res.status(401).json({ error: "expired token" });
+    default:
+      next(error);
   }
-
-  return next(error);
 };
 
 morgan.token("body", (req) => JSON.stringify(req.body));
 
 const requestLogger = morgan(":method :url :body - :response-time ms");
 
+const tokenExtractor = (req, _res, next) => {
+  const authorization = req.get("authorization");
+
+  if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
+    req.token = authorization.slice(7);
+  }
+
+  next();
+};
+
+const tokenDecoder = (req, res, next) => {
+  jwt.verify(req.token, config.SECRET, (error, decodedToken) => {
+    if (error) {
+      return next(error);
+    }
+
+    if (!decodedToken || !decodedToken.id) {
+      return res.status(401).json({ error: "invalid token" });
+    }
+
+    req.user = decodedToken;
+
+    next();
+  });
+};
+
 module.exports = {
   unknownEndpointHandler,
   errorHandler,
   requestLogger,
+  tokenExtractor,
+  tokenDecoder,
 };
