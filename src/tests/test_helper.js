@@ -1,5 +1,6 @@
-const Blog = require("../models/Blog");
 const { Types } = require("mongoose");
+const User = require("../models/User");
+const Blog = require("../models/Blog");
 
 const initialBlogs = [
   {
@@ -35,9 +36,20 @@ const resetBlogsInDB = async () => {
   await Blog.insertMany(initialBlogs);
 };
 
+const getUsersInDB = async () => {
+  const users = await User.find({});
+  return users.map((user) => user.toJSON());
+};
+
+const resetUsersInDB = async () => {
+  await User.deleteMany({});
+};
+
 module.exports = {
   initialBlogs,
   getNonExistingId,
   getBlogsInDB,
   resetBlogsInDB,
+  resetUsersInDB,
+  getUsersInDB,
 };
