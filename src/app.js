@@ -10,9 +10,10 @@ const app = express();
 
 app.use(middleware.requestLogger);
 app.use(express.json());
+app.use(middleware.tokenExtractor);
+app.use("/api/login", routes.login);
 app.use("/api/users", routes.users);
 app.use("/api/blogs", routes.blogs);
-app.use("/api/login", routes.login);
 app.use(middleware.unknownEndpointHandler);
 app.use(middleware.errorHandler);
 
