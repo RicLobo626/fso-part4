@@ -7,11 +7,11 @@ const helper = require("./test_helper");
 
 const api = supertest(app);
 
-describe("when there is initially some blogs saved", () => {
-  before(async () => {
-    await db.connect();
-  });
+before(async () => {
+  await db.connect();
+});
 
+describe("when there is initially some blogs saved", () => {
   beforeEach(async () => {
     await helper.resetBlogsInDB();
   });
