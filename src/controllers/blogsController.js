@@ -23,9 +23,20 @@ const createBlog = async (req, res) => {
 
 const deleteBlog = async (req, res) => {
   const id = req.params.id;
-  await Blog.findByIdAndDelete(id);
+  const blog = await Blog.findById(id);
 
-  res.status(204).end();
+  if (!blog) {
+    return res.status(404).end();
+  }
+
+  const isAuthor = blog.author.toString() === req.user.id.toString();
+
+  if (isAuthor) {
+    await blog.deleteOne();
+    return res.status(204).end();
+  }
+
+  res.status(403).json({ error: "you don't have permission to delete this blog" });
 };
 
 const likeBlog = async (req, res) => {
