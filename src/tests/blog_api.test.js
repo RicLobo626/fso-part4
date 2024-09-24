@@ -36,6 +36,16 @@ describe("when there is initially some blogs saved", () => {
   });
 
   describe("addition of a new blog", () => {
+    test("fails if token is missing", async () => {
+      const newBlog = {
+        title: "Created by a test",
+        url: "http://testblogs.com",
+        likes: 0,
+      };
+
+      await api.post("/api/blogs").send(newBlog).expect(401);
+    });
+
     describe("when token is valid", () => {
       let token;
 
