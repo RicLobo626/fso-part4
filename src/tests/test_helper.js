@@ -6,20 +6,17 @@ const Blog = require("../models/Blog");
 const initialBlogs = [
   {
     title: "First blog",
-    author: "John Doe",
     url: "http://example.com",
     likes: 5,
   },
 
   {
     title: "The blog",
-    author: "Bob Smith",
     url: "http://boblogs.com",
     likes: 7,
   },
   {
     title: "Some blog",
-    author: "Jane Doe",
     url: "http://jane.com",
     likes: 3,
   },

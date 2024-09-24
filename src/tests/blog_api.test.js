@@ -36,48 +36,66 @@ describe("when there is initially some blogs saved", () => {
   });
 
   describe("addition of a new blog", () => {
-    test("succeeds with valid data", async () => {
-      const newBlog = {
-        title: "Created by a test",
-        author: "Test",
-        url: "http://testblogs.com",
-        likes: 0,
-      };
+    describe("when token is valid", () => {
+      let token;
 
-      await api
-        .post("/api/blogs")
-        .send(newBlog)
-        .expect(201)
-        .expect("Content-Type", /application\/json/);
+      beforeEach(async () => {
+        const newUser = {
+          username: "johnny",
+          password: "pw123",
+        };
 
-      const blogsAtEnd = await helper.getBlogsInDB();
+        const response = await api.post("/api/login").send(newUser);
+        token = response.body.token;
+      });
 
-      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1);
-      assert(blogsAtEnd.some((b) => b.title === "Created by a test"));
-    });
+      test("succeeds with valid data", async () => {
+        const newBlog = {
+          title: "Created by a test",
+          url: "http://testblogs.com",
+          likes: 0,
+        };
 
-    test("will default likes to 0 if field is missing", async () => {
-      const newBlog = {
-        title: "Testing default likes",
-        author: "Test",
-        url: "http://testblogs.com",
-      };
+        await api
+          .post("/api/blogs")
+          .set("Authorization", `Bearer ${token}`)
+          .send(newBlog)
+          .expect(201)
+          .expect("Content-Type", /application\/json/);
 
-      await api.post("/api/blogs").send(newBlog);
+        const blogsAtEnd = await helper.getBlogsInDB();
 
-      const blogsAtEnd = await helper.getBlogsInDB();
+        assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1);
+        assert(blogsAtEnd.some((b) => b.title === "Created by a test"));
+      });
 
-      const blog = blogsAtEnd.find((b) => b.title === "Testing default likes");
+      test("will default likes to 0 if field is missing", async () => {
+        const newBlog = {
+          title: "Testing default likes",
+          url: "http://testblogs.com",
+        };
 
-      assert.strictEqual(blog.likes, 0);
-    });
+        await api
+          .post("/api/blogs")
+          .set("Authorization", `Bearer ${token}`)
+          .send(newBlog);
 
-    test("will respond with 400 if title or url are missing", async () => {
-      const newBlog = {
-        author: "Test",
-      };
+        const blogsAtEnd = await helper.getBlogsInDB();
 
-      await api.post("/api/blogs").send(newBlog).expect(400);
+        const blog = blogsAtEnd.find((b) => b.title === "Testing default likes");
+
+        assert.strictEqual(blog.likes, 0);
+      });
+
+      test("will respond with 400 if title or url are missing", async () => {
+        const newBlog = {};
+
+        await api
+          .post("/api/blogs")
+          .set("Authorization", `Bearer ${token}`)
+          .send(newBlog)
+          .expect(400);
+      });
     });
   });
 
