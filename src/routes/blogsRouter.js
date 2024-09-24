@@ -4,8 +4,8 @@ const middleware = require("../utils/middleware");
 const blogsRouter = Router();
 
 blogsRouter.get("/", blogsController.getBlogs);
-blogsRouter.post("/", middleware.tokenDecoder, blogsController.createBlog);
-blogsRouter.put("/:id", middleware.tokenDecoder, blogsController.likeBlog);
-blogsRouter.delete("/:id", middleware.tokenDecoder, blogsController.deleteBlog);
+blogsRouter.post("/", middleware.userExtractor, blogsController.createBlog);
+blogsRouter.delete("/:id", middleware.userExtractor, blogsController.deleteBlog);
+blogsRouter.put("/:id", blogsController.likeBlog);
 
 module.exports = blogsRouter;
