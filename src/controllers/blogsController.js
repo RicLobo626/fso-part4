@@ -1,7 +1,7 @@
 const Blog = require("../models/Blog.js");
 
 const getBlogs = async (_req, res) => {
-  const blogs = await Blog.find({}).populate("author", {
+  const blogs = await Blog.find({}).populate("user", {
     id: 1,
     username: 1,
     name: 1,
@@ -11,7 +11,7 @@ const getBlogs = async (_req, res) => {
 };
 
 const createBlog = async (req, res) => {
-  const blog = new Blog({ ...req.body, author: req.user.id });
+  const blog = new Blog({ ...req.body, user: req.user.id });
 
   req.user.blogs.push(blog.id);
 
@@ -29,9 +29,9 @@ const deleteBlog = async (req, res) => {
     return res.status(404).end();
   }
 
-  const isAuthor = blog.author.toString() === req.user.id.toString();
+  const isCreator = blog.user.toString() === req.user.id.toString();
 
-  if (isAuthor) {
+  if (isCreator) {
     await blog.deleteOne();
     return res.status(204).end();
   }
