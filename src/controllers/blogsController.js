@@ -46,7 +46,7 @@ const likeBlog = async (req, res) => {
     id,
     { $inc: { likes: 1 } },
     { new: true }
-  );
+  ).populate("user", { id: 1, username: 1, name: 1 });
 
   if (blog) {
     return res.json(blog);
